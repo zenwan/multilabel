@@ -14,7 +14,9 @@ class TinyMindDataset(Dataset):
     self.train_imgs = self.train_img_order(root_path, train_img_dir, train_img_order_csv)
 
   def img_loader(self, img_path):
-    return Image.open(img_path).resize((224,224))
+    img = Image.open(img_path).convert("RGB")
+    img = img.resize((224,224))
+    return img
 
   def train_img_order(self, root_path, train_img_dir ,train_img_order_csv):
     train_img_paths = pd.read_csv(os.path.join(root_path, train_img_order_csv)).iloc[:,0]
@@ -41,16 +43,22 @@ if __name__ == '__main__':
 
   tiny_mind_dataset = TinyMindDataset(root_path, train_tags_path, train_img_dir, train_img_order_csv)
   for img, label in tiny_mind_dataset:
-    print(type(img), type(label))
-    break
+    # print(img.size(), label.size())
+    # print(type())
+    # print(img.size().numpy())
 
+    assert img.size() == torch.Size([3, 224, 224])
+    assert label.size() == torch.Size([6941])
+
+  #   # break
+  exit()
   tiny_mind_dataloader = DataLoader(tiny_mind_dataset, batch_size=4,
                           shuffle=True)
 
   for imgs, labels in tiny_mind_dataloader:
     print(imgs.size())
     print(labels.size())
-    break
+    # break
 
 
 
